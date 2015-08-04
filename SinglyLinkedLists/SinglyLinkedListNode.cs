@@ -18,7 +18,8 @@ namespace SinglyLinkedLists
             get { return next; }
             // can use keyword value for setter.
             set {
-                if (Object.ReferenceEquals(this, value)) { throw new ArgumentException(); }
+                // value below doesn't refer to a node's value, it refers to what's being passed into the setter (ie, a node instance).
+                if (Object.ReferenceEquals(this, value) || value == null) { throw new ArgumentException(); }
                 this.next = value;
             }
         }
@@ -43,20 +44,6 @@ namespace SinglyLinkedLists
             return node1.CompareTo(node2) > 0;
         }
 
-        public static bool operator ==(SinglyLinkedListNode left, SinglyLinkedListNode right)
-        {
-            // 2 things are equal when CompareTo equals 0.
-            // note that this can be done because operators are just methods! == is just the name of a method.
-            // C# knows now that when dealing with == between two instances of SinglyLinkedLists, use this operator;
-            // knows this by the signature.
-            return left.CompareTo(right) == 0;
-        }
-
-        public static bool operator !=(SinglyLinkedListNode left, SinglyLinkedListNode right)
-        {
-            return !(left == right);
-        }
-
         public SinglyLinkedListNode(string value)
         {
             // don't *need* to write "this"; linter may throw errors. But it's ok to.
@@ -76,15 +63,26 @@ namespace SinglyLinkedLists
             // obj is passed in as an Object, but we want to pull it down the hierarchy tree and
             // interface with it as a SinglyLinkedListNode. (downcasting).
 
-            //SinglyLinkedListNode other_node = obj as SinglyLinkedListNode;
+            // if something that can't be casted is casted as below, it becomes null?
+            // still compiles given that the method takes in an object, and we're putting in an object.
+            // but if it can't be downcast to SinglyLinkedListNode --> null.
+
+            // any defined variable is greater than null. "Something is greater than nothing"
+            SinglyLinkedListNode other_node = obj as SinglyLinkedListNode;
+            if (other_node == null)
+            {
+                return 1;
+            }
+            // remember that a node's value is a string.
+            // strings are objects, so they have a CompareTo method.
+            // we'll use it.
+            else
+            {
+                return this.value.CompareTo(other_node.Value);
+            }
 
             // same class but different instances; use getter/setter method.
             // equal is 0; if this is less than that, -1.
-
-            //if (this.value == other_node.Value) return 0;
-            //if ((int)this.value > (int)other_node.Value) return 1;
-            //return 1;
-            throw new NotImplementedException();
         }
 
         public bool IsLast()
@@ -99,6 +97,11 @@ namespace SinglyLinkedLists
         public override string ToString()
         {
             return this.value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.CompareTo(obj) == 0;
         }
     }
 }

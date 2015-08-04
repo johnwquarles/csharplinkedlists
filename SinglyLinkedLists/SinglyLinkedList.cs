@@ -7,6 +7,7 @@ namespace SinglyLinkedLists
 {
     public class SinglyLinkedList
     {
+        private SinglyLinkedListNode first_node;
         public SinglyLinkedList()
         {
             // NOTE: This constructor isn't necessary, once you've implemented the constructor below.
@@ -37,23 +38,69 @@ namespace SinglyLinkedLists
 
         public void AddLast(string value)
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                first_node = new SinglyLinkedListNode(value);
+            }
+
+            else
+            {
+                var node = this.first_node;
+                while(!node.IsLast())
+                {
+                    node = node.Next;
+                }
+                node.Next = new SinglyLinkedListNode(value);
+            }
         }
 
         // NOTE: There is more than one way to accomplish this.  One is O(n).  The other is O(1).
         public int Count()
         {
-            throw new NotImplementedException();
+            if (this.First() == null) {
+                return 0;
+            } else {
+                int length = 1;
+                var node = this.first_node;
+                // complexity is O(n)
+                while (node.Next != null)
+                {
+                    length++;
+                    node = node.Next;
+                }
+                return length;
+            }
         }
 
         public string ElementAt(int index)
         {
-            throw new NotImplementedException();
+            if (this.First() == null)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            else
+            {
+                var node = this.first_node;
+                for(var i = 0; i <= index; i++)
+                {
+                    if (i == index) { break; }
+                    node = node.Next;
+                }
+                return node.Value;
+            }
         }
 
         public string First()
         {
-            throw new NotImplementedException();
+
+            if (this.first_node == null)
+            {
+                return null;
+            } else
+            {
+                return this.first_node.Value;
+            }
         }
 
         public int IndexOf(string value)
@@ -71,7 +118,15 @@ namespace SinglyLinkedLists
         // HINT 3: If you highlight code and right click, you can use the refactor menu to extract a method for you...
         public string Last()
         {
-            throw new NotImplementedException();
+            if (this.first_node == null)
+            {
+                return null;
+            }
+
+            else
+            {
+                return this.ElementAt(this.Count() - 1);
+            }
         }
 
         public void Remove(string value)
@@ -84,9 +139,34 @@ namespace SinglyLinkedLists
             throw new NotImplementedException();
         }
 
+        public string ToString()
+        {
+            if (this.Count() == 0)
+            {
+                return "{ }";
+            }
+
+            else
+            {
+                string ret_str = "{ ";
+                string commaOrNot = this.Count() > 1 ? "," : "";
+                for (var i = 0; i < this.Count(); i++)
+                {
+                    ret_str += "\"" + this.ElementAt(i) + "\"" + (i == this.Count() - 1 ? "": commaOrNot) +" ";
+                }
+                ret_str += "}";
+                return ret_str;
+            }
+        }
+
         public string[] ToArray()
         {
-            throw new NotImplementedException();
+            string[] ret_arr = new string[this.Count()];
+            for (var i = 0; i < this.Count(); i++)
+            {
+                ret_arr[i] = this.ElementAt(i);
+            }
+            return ret_arr;
         }
     }
 }
